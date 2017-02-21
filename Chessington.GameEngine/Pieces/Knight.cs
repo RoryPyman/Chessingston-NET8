@@ -16,7 +16,8 @@ namespace Chessington.GameEngine.Pieces
             possibleMoves.AddRange(FindKnightMoves(board, position, 1, 2));
 
             possibleMoves.RemoveAll(p => p.Col < 0 || p.Col > 7 || p.Row < 0 || p.Row > 8);
-            possibleMoves.RemoveAll(p => board.GetPiece(p) != null);
+            possibleMoves = possibleMoves.Where(p => board.GetPiece(p) == null || board.GetPiece(p).Player != this.Player).ToList<Square>();
+            //possibleMoves.RemoveAll(p => board.GetPiece(p).Player == this.Player);
             return possibleMoves;
         }
 
