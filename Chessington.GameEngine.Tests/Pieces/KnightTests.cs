@@ -59,7 +59,7 @@ namespace Chessington.GameEngine.Tests.Pieces
             var moves = knight.GetAvailableMoves(board);
 
             var expectedMoves = new List<Square> {Square.At(1, 2), Square.At(2, 1)};
-            moves.ShouldAllBeEquivalentTo(expectedMoves);
+            moves.Should().BeEquivalentTo(expectedMoves);
         }
     }
 }

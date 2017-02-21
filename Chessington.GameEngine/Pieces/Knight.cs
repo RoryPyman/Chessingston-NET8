@@ -15,11 +15,12 @@ namespace Chessington.GameEngine.Pieces
             possibleMoves.AddRange(FindKnightMoves(board, position, 2, 1));
             possibleMoves.AddRange(FindKnightMoves(board, position, 1, 2));
 
+            possibleMoves.RemoveAll(p => p.Col < 0 || p.Col > 7 || p.Row < 0 || p.Row > 8);
             possibleMoves.RemoveAll(p => board.GetPiece(p) != null);
             return possibleMoves;
         }
 
-        
+
         private List<Square> FindKnightMoves(Board board, Square position, int xIndex, int yIndex)
         {
             List<Square> available = new List<Square>();

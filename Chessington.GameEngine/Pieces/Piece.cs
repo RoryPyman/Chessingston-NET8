@@ -27,14 +27,21 @@ namespace Chessington.GameEngine.Pieces
             int row = position.Row;
             int col = position.Col;
             int loop = 0;
-            while (row < GameSettings.BoardSize && col < GameSettings.BoardSize && row >= 0 && col >= 0 && loop <= depth)
+            while (row < GameSettings.BoardSize && col < GameSettings.BoardSize && row >= 0 && col >= 0 && loop < depth)
             {
+                row += xIndex;
+                col += yIndex;
+                if (row == GameSettings.BoardSize || col == GameSettings.BoardSize || row < 0 || col < 0) return available;
+
                 if (board.GetPiece(new Square(row, col)) == null)
                 {
                     available.Add(new Square(row, col));
                 }
-                row += xIndex;
-                col += yIndex;
+                else
+                {
+                    return available;
+                }
+
                 loop++;
             }
             return available;

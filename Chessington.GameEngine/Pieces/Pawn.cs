@@ -13,17 +13,19 @@ namespace Chessington.GameEngine.Pieces
         {
             Square position = board.FindPiece(this);
             int offset = this.Player == Player.White ? -1 : 1;
-            if (position.Row > 8)
-            {
-                return Enumerable.Empty<Square>();
-            }
+
 
             List<Square> allMoves = new List<Square>();
+            if (position.Row + offset > 7 || position.Row + offset < 0) return Enumerable.Empty<Square>();
             Square newLoc = new Square(position.Row + offset, position.Col);
-            Square newUnmovedLoc = new Square(position.Row + offset * 2, position.Col);
+            Square newUnmovedLoc;
 
+            if (!(position.Row + offset * 2 > 7 || position.Row + offset * 2 < 0))
+            {
+                newUnmovedLoc = new Square(position.Row + offset * 2, position.Col);
+                if (IsStartingPosition(position, this.Player) && board.GetPiece(newUnmovedLoc) == null && board.GetPiece(newLoc) == null) allMoves.Add(newUnmovedLoc);
+            }
             if (board.GetPiece(newLoc) == null) allMoves.Add(newLoc);
-            if (IsStartingPosition(position, this.Player) && board.GetPiece(newUnmovedLoc) == null) allMoves.Add(newUnmovedLoc);
             return allMoves.ToArray();
         }
 

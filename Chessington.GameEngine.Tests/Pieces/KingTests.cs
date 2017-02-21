@@ -48,7 +48,7 @@ namespace Chessington.GameEngine.Tests.Pieces
                 Square.At(0, 1)
             };
 
-            moves.ShouldAllBeEquivalentTo(expectedMoves);
+            moves.Should().BeEquivalentTo(expectedMoves);
         }
     }
 }

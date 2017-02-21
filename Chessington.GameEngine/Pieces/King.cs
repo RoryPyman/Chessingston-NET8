@@ -14,7 +14,6 @@ namespace Chessington.GameEngine.Pieces
             
             Square square = board.FindPiece(this);
 
-
             availableMoves.AddRange(findDirectionalSquares(board, square, 1, 0, 1));
             availableMoves.AddRange(findDirectionalSquares(board, square, 0, 1, 1));
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, 0, 1));
