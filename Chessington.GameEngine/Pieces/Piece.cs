@@ -32,10 +32,11 @@ namespace Chessington.GameEngine.Pieces
                 row += xIndex;
                 col += yIndex;
                 if (row == GameSettings.BoardSize || col == GameSettings.BoardSize || row < 0 || col < 0) return available;
-
-                if (board.GetPiece(new Square(row, col)) == null)
+                Square newSquare = new Square(row, col);
+                if (board.GetPiece(newSquare) == null || board.GetPiece(newSquare).Player != board.GetPiece(position).Player)
                 {
-                    available.Add(new Square(row, col));
+                    available.Add(newSquare);
+                    if (board.GetPiece(newSquare)!= null) return available;
                 }
                 else
                 {
