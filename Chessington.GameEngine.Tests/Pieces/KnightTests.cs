@@ -29,7 +29,7 @@ namespace Chessington.GameEngine.Tests.Pieces
                 Square.At(6, 3)
             };
 
-            moves.ShouldAllBeEquivalentTo(expectedMoves);
+            moves.Should().BeEquivalentTo(expectedMoves);
         }
 
         [Test]

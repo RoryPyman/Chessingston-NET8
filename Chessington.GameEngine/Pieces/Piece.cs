@@ -21,12 +21,13 @@ namespace Chessington.GameEngine.Pieces
             board.MovePiece(currentSquare, newSquare);
         }
 
-        public List<Square> findDirectionalSquares(Board board, Square position, int xIndex, int yIndex)
+        public List<Square> findDirectionalSquares(Board board, Square position, int xIndex, int yIndex, int depth=10)
         {
             List<Square> available = new List<Square>();
             int row = position.Row;
             int col = position.Col;
-            while (row < GameSettings.BoardSize && col < GameSettings.BoardSize && row >= 0 && col >= 0)
+            int loop = 0;
+            while (row < GameSettings.BoardSize && col < GameSettings.BoardSize && row >= 0 && col >= 0 && loop <= depth)
             {
                 if (board.GetPiece(new Square(row, col)) == null)
                 {
@@ -34,6 +35,7 @@ namespace Chessington.GameEngine.Pieces
                 }
                 row += xIndex;
                 col += yIndex;
+                loop++;
             }
             return available;
         }
