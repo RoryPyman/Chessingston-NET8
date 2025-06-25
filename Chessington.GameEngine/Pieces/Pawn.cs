@@ -19,11 +19,11 @@ namespace Chessington.GameEngine.Pieces
             }
 
             List<Square> allMoves = new List<Square>();
-            Square new_loc = new Square(position.Row + offset, position.Col);
-            Square new_unmoved_loc = new Square(position.Row + offset * 2, position.Col);
+            Square newLoc = new Square(position.Row + offset, position.Col);
+            Square newUnmovedLoc = new Square(position.Row + offset * 2, position.Col);
 
-            if (board.GetPiece(new_loc) == null) allMoves.Add(new_loc);
-            if (IsStartingPosition(position, this.Player) && board.GetPiece(new_unmoved_loc) == null) allMoves.Add(new_unmoved_loc);
+            if (board.GetPiece(newLoc) == null) allMoves.Add(newLoc);
+            if (IsStartingPosition(position, this.Player) && board.GetPiece(newUnmovedLoc) == null) allMoves.Add(newUnmovedLoc);
             return allMoves.ToArray();
         }
 
