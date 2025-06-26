@@ -60,23 +60,32 @@ namespace Chessington.GameEngine
                 OnPieceCaptured(board[to.Row, to.Col]!);
             }
 
-            if (movingPiece is Pawn) handlePawnMove((Pawn) movingPiece, from, to);
-            lastMovedPiece = movingPiece;
+            if (movingPiece is Pawn) lastMovedPiece = handlePawnMove((Pawn)movingPiece, from, to);
+            else
+            {
+                lastMovedPiece = movingPiece;
+            }
             //Move the piece and set the 'from' square to be empty.
-            board[to.Row, to.Col] = board[from.Row, from.Col];
+            board[to.Row, to.Col] = lastMovedPiece;
             board[from.Row, from.Col] = null;
 
             CurrentPlayer = movingPiece.Player == Player.White ? Player.Black : Player.White;
             OnCurrentPlayerChanged(CurrentPlayer);
         }
 
-        public void handlePawnMove(Pawn movingPiece, Square from, Square to) {
+        public Piece handlePawnMove(Pawn movingPiece, Square from, Square to)
+        {
             // Check for En Pessant
             if (to.Col != from.Col && GetPiece(to) == null)
             {
                 Square sq = FindPiece(lastMovedPiece);
                 OnPieceCaptured(lastMovedPiece);
                 board[sq.Row, sq.Col] = null;
+            }
+            Console.WriteLine("Row: " + to.Row + "Player: " + movingPiece.Player);
+            if ((to.Row == 0 && movingPiece.Player == Player.White) || to.Row == 7 && movingPiece.Player == Player.Black)
+            {
+                return new Queen(movingPiece.Player);
             }
 
             if (to.Row == from.Row + 2)
@@ -87,6 +96,7 @@ namespace Chessington.GameEngine
             {
                 movingPiece.hasJustMovedTwo = false;
             }
+            return movingPiece;
         }
 
         public delegate void PieceCapturedEventHandler(Piece piece);
