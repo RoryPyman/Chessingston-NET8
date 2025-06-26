@@ -256,5 +256,64 @@ namespace Chessington.GameEngine.Tests.Pieces
             moves.Should().BeEquivalentTo([Square.At(2, 2)]);
 
         }
+
+                [Test]
+        public void WhitePawn_PromotesToQueen_AtLastRow()
+        {
+            // Arrange
+            var board = new Board();
+            var pawn = new Pawn(Player.White);
+            var startSquare = new Square(1, 4);
+            var endSquare = new Square(0, 4);
+
+            board.AddPiece(startSquare, pawn);
+
+            // Act
+            board.MovePiece(startSquare, endSquare);
+            var promotedPiece = board.GetPiece(endSquare);
+
+            // Assert
+            Assert.That(promotedPiece, Is.InstanceOf<Queen>());
+            Assert.That(promotedPiece!.Player, Is.EqualTo(Player.White));
+        }
+
+        [Test]
+        public void BlackPawn_PromotesToQueen_AtLastRow()
+        {
+            // Arrange
+            var board = new Board(Player.Black);
+            var pawn = new Pawn(Player.Black);
+            var startSquare = new Square(6, 3);
+            var endSquare = new Square(7, 3);
+
+            board.AddPiece(startSquare, pawn);
+
+            // Act
+            board.MovePiece(startSquare, endSquare);
+            var promotedPiece = board.GetPiece(endSquare);
+
+            // Assert
+            Assert.That(promotedPiece, Is.InstanceOf<Queen>());
+            Assert.That(promotedPiece!.Player, Is.EqualTo(Player.Black));
+        }
+
+        [Test]
+        public void Pawn_DoesNotPromote_BeforeFinalRow()
+        {
+            // Arrange
+            var board = new Board();
+            var pawn = new Pawn(Player.White);
+            var startSquare = new Square(2, 4);
+            var endSquare = new Square(1, 4);
+
+            board.AddPiece(startSquare, pawn);
+
+            // Act
+            board.MovePiece(startSquare, endSquare);
+            var piece = board.GetPiece(endSquare);
+
+            // Assert
+            Assert.That(piece, Is.InstanceOf<Pawn>());
+        }
     }
 }
