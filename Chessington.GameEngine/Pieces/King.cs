@@ -5,13 +5,14 @@ namespace Chessington.GameEngine.Pieces
 {
     public class King : Piece
     {
+        private hasMoved = false;
         public King(Player player)
             : base(player) { }
 
-        public override IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck=false)
+        public override IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck = false)
         {
             List<Square> availableMoves = new List<Square>();
-            
+
             Square square = board.FindPiece(this);
 
             availableMoves.AddRange(findDirectionalSquares(board, square, 1, 0, 1));
@@ -22,7 +23,16 @@ namespace Chessington.GameEngine.Pieces
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, -1, 1));
             availableMoves.AddRange(findDirectionalSquares(board, square, 1, 1, 1));
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, 1, 1));
-            return availableMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
+
+
+            availableMoves = availableMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
+            return availableMoves;
+        }
+
+        private bool AttemptCastle(Board board)
+        {
+            Square position = board.FindPiece(this);
+            
         }
     }
 }
