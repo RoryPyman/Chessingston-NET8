@@ -5,7 +5,7 @@ namespace Chessington.GameEngine.Pieces
 {
     public class King : Piece
     {
-        private hasMoved = false;
+        private bool hasMoved = false;
         public King(Player player)
             : base(player) { }
 
@@ -25,7 +25,7 @@ namespace Chessington.GameEngine.Pieces
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, 1, 1));
 
 
-            availableMoves = availableMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
+            availableMoves = availableMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this)).ToList();
             return availableMoves;
         }
 

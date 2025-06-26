@@ -119,8 +119,8 @@ namespace Chessington.GameEngine.Tests.Pieces
             board.AddPiece(Square.At(7, 4), king);
             board.AddPiece(Square.At(7, 7), rook);
 
-            var kingSquare = Square.At(7, 4);
-            var rookSquare = Square.At(7, 7);
+
+            board.AddPiece(Square.At(0, 0), new Rook(Player.Black));
 
             var moves = king.GetAvailableMoves(board);
 
@@ -143,7 +143,26 @@ namespace Chessington.GameEngine.Tests.Pieces
 
             var moves = king.GetAvailableMoves(board);
 
-            Assert.Equals(moves.Contains(Square.At(7, 6)), false);
+            moves.Should().NotContain(Square.At(7, 6));
+        }
+
+        [Test]
+        public void KingCantCastleAfterRookMoving()
+        {
+            var board = new Board(Player.White);
+
+            var king = new King(Player.White);
+            var rook = new Rook(Player.White);
+
+            board.AddPiece(Square.At(7, 4), king);
+            board.AddPiece(Square.At(7, 7), rook);
+
+            board.MovePiece(Square.At(7, 7), Square.At(7, 6));
+            board.MovePiece(Square.At(7, 6), Square.At(7, 7));
+
+            var moves = king.GetAvailableMoves(board);
+
+            moves.Should().NotContain(Square.At(7, 6));
         }
 
         [Test]
@@ -157,11 +176,11 @@ namespace Chessington.GameEngine.Tests.Pieces
 
             board.AddPiece(Square.At(7, 4), king);
             board.AddPiece(Square.At(7, 7), rook);
-
             board.AddPiece(Square.At(0, 5), blackRook);
 
             var moves = king.GetAvailableMoves(board);
-            Assert.Equals(moves.Contains(Square.At(7, 6)), false);
+
+            moves.Should().NotContain(Square.At(7, 6));
         }
 
         [Test]
@@ -175,11 +194,85 @@ namespace Chessington.GameEngine.Tests.Pieces
 
             board.AddPiece(Square.At(7, 4), king);
             board.AddPiece(Square.At(7, 7), rook);
-
             board.AddPiece(Square.At(0, 4), blackRook);
 
             var moves = king.GetAvailableMoves(board);
-            Assert.Equals(moves.Contains(Square.At(7, 6)), false);
+
+            moves.Should().NotContain(Square.At(7, 6));
+        }
+
+        [Test]
+        public void KingCanCastleQueenside()
+        {
+            var board = new Board(Player.White);
+
+            var king = new King(Player.White);
+            var rook = new Rook(Player.White);
+
+            board.AddPiece(Square.At(7, 4), king);
+            board.AddPiece(Square.At(7, 0), rook);
+            board.AddPiece(Square.At(0, 7), new Rook(Player.Black));
+            var moves = king.GetAvailableMoves(board);
+
+            moves.Should().Contain(Square.At(7, 2));
+        }
+
+        [Test]
+        public void KingCantCastleQueensideAfterMoving()
+        {
+            var board = new Board(Player.White);
+
+            var king = new King(Player.White);
+            var rook = new Rook(Player.White);
+
+            board.AddPiece(Square.At(7, 4), king);
+            board.AddPiece(Square.At(7, 0), rook);
+
+            board.MovePiece(Square.At(7, 4), Square.At(7, 5));
+            board.MovePiece(Square.At(7, 5), Square.At(7, 4));
+
+            var moves = king.GetAvailableMoves(board);
+
+            moves.Should().NotContain(Square.At(7, 2));
+        }
+
+        [Test]
+        public void KingCantCastleQueensideThroughCheck()
+        {
+            var board = new Board(Player.White);
+
+            var king = new King(Player.White);
+            var rook = new Rook(Player.White);
+            var blackRook = new Rook(Player.Black);
+
+            board.AddPiece(Square.At(7, 4), king);
+            board.AddPiece(Square.At(7, 0), rook);
+
+            board.AddPiece(Square.At(0, 3), blackRook);
+
+            var moves = king.GetAvailableMoves(board);
+
+            moves.Should().NotContain(Square.At(7, 2));
+        }
+
+        [Test]
+        public void KingCantCastleQueensideWhileInCheck()
+        {
+            var board = new Board(Player.White);
+
+            var king = new King(Player.White);
+            var rook = new Rook(Player.White);
+            var blackRook = new Rook(Player.Black);
+
+            board.AddPiece(Square.At(7, 4), king);
+            board.AddPiece(Square.At(7, 0), rook);
+            board.AddPiece(Square.At(0, 4), blackRook);
+
+            var moves = king.GetAvailableMoves(board);
+
+            moves.Should().NotContain(Square.At(7, 2));
         }
     }
+
+
 }
