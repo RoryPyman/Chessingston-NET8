@@ -28,8 +28,8 @@ namespace Chessington.GameEngine.Pieces
             if (board.GetPiece(newLoc) == null) allMoves.Add(newLoc);
 
 
-            allMoves.AddRange(findDirectionalSquares(board, position, offset, 1, 1, true));
-            allMoves.AddRange(findDirectionalSquares(board, position, offset, -1, 1, true));
+            allMoves.AddRange(findCapture(board, position, offset, 1));
+            allMoves.AddRange(findCapture(board, position, offset, -1));
 
 
             return allMoves.ToArray();
@@ -45,6 +45,21 @@ namespace Chessington.GameEngine.Pieces
                 return true;
             }
             return false;
+        }
+
+        private List<Square> findCapture(Board board, Square position, int x, int y)
+        {
+            List<Square> available = new List<Square>();
+            int row = position.Row + x;
+            int col = position.Col + y;
+            if (row == GameSettings.BoardSize || col == GameSettings.BoardSize || row < 0 || col < 0) return available;
+            Square newSquare = new Square(row, col);
+            if (board.GetPiece(newSquare) != null && board.GetPiece(newSquare)!.Player != board.GetPiece(position)!.Player)
+            {
+                available.Add(newSquare);
+                return available;
+            }
+            return [];
         }
     }
 }

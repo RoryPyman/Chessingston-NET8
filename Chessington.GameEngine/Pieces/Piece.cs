@@ -21,7 +21,7 @@ namespace Chessington.GameEngine.Pieces
             board.MovePiece(currentSquare, newSquare);
         }
 
-        public List<Square> findDirectionalSquares(Board board, Square position, int xIndex, int yIndex, int depth=10, bool capture=false)
+        public List<Square> findDirectionalSquares(Board board, Square position, int xIndex, int yIndex, int depth=10)
         {
             List<Square> available = new List<Square>();
             int row = position.Row;
@@ -33,16 +33,7 @@ namespace Chessington.GameEngine.Pieces
                 col += yIndex;
                 if (row == GameSettings.BoardSize || col == GameSettings.BoardSize || row < 0 || col < 0) return available;
                 Square newSquare = new Square(row, col);
-                if (capture)
-                {
-                    Console.WriteLine("Hello: " + row + ", " + col);
-                    if (board.GetPiece(newSquare) != null && board.GetPiece(newSquare).Player != board.GetPiece(position).Player)
-                    {
-                        available.Add(newSquare);
-                        return available;
-                    }
-                }
-                else if (board.GetPiece(newSquare) == null || board.GetPiece(newSquare).Player != board.GetPiece(position).Player)
+                if (board.GetPiece(newSquare) is null || board.GetPiece(newSquare).Player != board.GetPiece(position).Player)
                 {
                     available.Add(newSquare);
                     if (board.GetPiece(newSquare) != null) return available;
