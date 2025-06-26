@@ -205,29 +205,32 @@ namespace Chessington.GameEngine.Tests.Pieces
         [Test]
         public void WhitePawns_CanEnPessant()
         {
-            var board = new Board();
+            var board = new Board(Player.Black);
             var blackPawn = new Pawn(Player.Black);
             var whitePawn = new Pawn(Player.White);
 
-            board.AddPiece(Square.At(2, 3), whitePawn);
+            board.AddPiece(Square.At(3, 2), whitePawn);
             board.AddPiece(Square.At(1, 1), blackPawn);
-            blackPawn.MoveTo(board, Square.At(1, 3));
+            blackPawn.MoveTo(board, Square.At(3, 1));
             var moves = whitePawn.GetAvailableMoves(board).ToList();
-            moves.Should().BeEquivalentTo([Square.At(1, 2), Square.At(2, 2)]);
+            moves.Should().BeEquivalentTo([Square.At(2, 1), Square.At(2, 2)]);
 
         }
 
         [Test]
         public void WhitePawns_CantEnPessantWhenMovedOnce()
         {
-            var board = new Board();
+            var board = new Board(Player.Black);
             var blackPawn = new Pawn(Player.Black);
             var whitePawn = new Pawn(Player.White);
+            var whiteRook = new Rook(Player.White);
 
-            board.AddPiece(Square.At(2, 3), whitePawn);
+            board.AddPiece(Square.At(3, 2), whitePawn);
+            board.AddPiece(Square.At(6, 6), whiteRook);
             board.AddPiece(Square.At(1, 1), blackPawn);
-            blackPawn.MoveTo(board, Square.At(1, 2));
-            blackPawn.MoveTo(board, Square.At(1, 3));
+            blackPawn.MoveTo(board, Square.At(2, 1));
+            whiteRook.MoveTo(board, Square.At(7, 6));
+            blackPawn.MoveTo(board, Square.At(3, 1));
             var moves = whitePawn.GetAvailableMoves(board).ToList();
             moves.Should().BeEquivalentTo([Square.At(2, 2)]);
 
@@ -235,15 +238,18 @@ namespace Chessington.GameEngine.Tests.Pieces
 
         public void WhitePawns_CantEnPessantAfterOtherMove()
         {
-            var board = new Board();
+            var board = new Board(Player.Black);
             var blackPawn = new Pawn(Player.Black);
             var whitePawn = new Pawn(Player.White);
             var blackRook = new Rook(Player.Black);
+            var whiteRook = new Rook(Player.White);
 
             board.AddPiece(Square.At(2, 3), whitePawn);
             board.AddPiece(Square.At(1, 1), blackPawn);
             board.AddPiece(Square.At(5, 5), blackRook);
+            board.AddPiece(Square.At(6, 6), whiteRook);
             blackPawn.MoveTo(board, Square.At(1, 3));
+            whiteRook.MoveTo(board, Square.At(7, 6));
             blackRook.MoveTo(board, Square.At(4, 5));
 
             var moves = whitePawn.GetAvailableMoves(board).ToList();

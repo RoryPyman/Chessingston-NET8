@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Chessington.GameEngine.Pieces;
 
 namespace Chessington.GameEngine
@@ -8,6 +9,8 @@ namespace Chessington.GameEngine
     public class Board
     {
         private readonly Piece?[,] board;
+        public Piece lastMovedPiece = null;
+
         public Player CurrentPlayer { get; private set; }
         public IList<Piece> CapturedPieces { get; private set; } 
 
@@ -57,6 +60,8 @@ namespace Chessington.GameEngine
                 OnPieceCaptured(board[to.Row, to.Col]!);
             }
 
+            if (movingPiece is Pawn) handlePawnMove((Pawn) movingPiece, from, to);
+            lastMovedPiece = movingPiece;
             //Move the piece and set the 'from' square to be empty.
             board[to.Row, to.Col] = board[from.Row, from.Col];
             board[from.Row, from.Col] = null;
@@ -64,7 +69,21 @@ namespace Chessington.GameEngine
             CurrentPlayer = movingPiece.Player == Player.White ? Player.Black : Player.White;
             OnCurrentPlayerChanged(CurrentPlayer);
         }
-        
+
+        public void handlePawnMove(Pawn movingPiece, Square from, Square to) {
+            // Check for En Pessant
+            //if (to.Col != from.Col)
+
+            if (to.Row == from.Row + 2)
+            {
+                movingPiece.hasJustMovedTwo = true;
+            }
+            else
+            {
+                movingPiece.hasJustMovedTwo = false;
+            }
+        }
+
         public delegate void PieceCapturedEventHandler(Piece piece);
         
         public event PieceCapturedEventHandler? PieceCaptured;
