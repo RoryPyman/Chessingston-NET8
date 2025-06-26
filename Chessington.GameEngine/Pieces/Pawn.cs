@@ -26,9 +26,14 @@ namespace Chessington.GameEngine.Pieces
                 if (IsStartingPosition(position, this.Player) && board.GetPiece(newUnmovedLoc) == null && board.GetPiece(newLoc) == null) allMoves.Add(newUnmovedLoc);
             }
             if (board.GetPiece(newLoc) == null) allMoves.Add(newLoc);
+
+
+            allMoves.AddRange(findDirectionalSquares(board, position, offset, 1, 1, true));
+            allMoves.AddRange(findDirectionalSquares(board, position, offset, -1, 1, true));
+
+
             return allMoves.ToArray();
         }
-
         private bool IsStartingPosition(Square position, Player player)
         {
             if (player == Player.White && position.Row == 7)
