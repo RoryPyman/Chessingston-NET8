@@ -72,7 +72,12 @@ namespace Chessington.GameEngine
 
         public void handlePawnMove(Pawn movingPiece, Square from, Square to) {
             // Check for En Pessant
-            //if (to.Col != from.Col)
+            if (to.Col != from.Col && GetPiece(to) == null)
+            {
+                Square sq = FindPiece(lastMovedPiece);
+                OnPieceCaptured(lastMovedPiece);
+                board[sq.Row, sq.Col] = null;
+            }
 
             if (to.Row == from.Row + 2)
             {
