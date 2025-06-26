@@ -76,5 +76,36 @@ namespace Chessington.GameEngine.Tests.Pieces
             var moves = king.GetAvailableMoves(board);
             moves.Should().NotContain(Square.At(4, 5));
         }
+        [Test]
+        public void MovingBlackKingIntoCheck()
+        {
+            var board = new Board(Player.Black);
+
+            var blackKing = new King(Player.Black);
+            var whiteRook = new Rook(Player.White);
+
+            board.AddPiece(Square.At(0, 4), blackKing);   // Black King on row 0, column 4
+            board.AddPiece(Square.At(2, 3), whiteRook);   // White Rook on row 2, column 4
+
+            bool causesCheck = board.doesMoveCauseCheck(Square.At(0, 3), blackKing);
+
+            Assert.That(causesCheck, Is.True);
+        }
+
+        [Test]
+        public void KingCantEscapeCheck()
+        {
+            var board = new Board(Player.Black);
+
+            var blackKing = new King(Player.Black);
+            var whiteQueen = new Queen(Player.White);
+
+            board.AddPiece(Square.At(0, 4), blackKing);   // Black King on row 0, column 4
+            board.AddPiece(Square.At(1, 4), whiteQueen);   // White Rook on row 2, column 4
+
+            List<Square> moves = blackKing.GetAvailableMoves(board).ToList();
+
+            moves.Should().BeEquivalentTo([Square.At(1, 4)]);
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace Chessington.GameEngine.Pieces
         public Pawn(Player player)
             : base(player) { }
 
-        public override IEnumerable<Square> GetAvailableMoves(Board board)
+        public override IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck=false)
         {
             Square position = board.FindPiece(this);
             int offset = this.Player == Player.White ? -1 : 1;
@@ -36,8 +36,7 @@ namespace Chessington.GameEngine.Pieces
             allMoves.AddRange(findCapture(board, position, offset, -1));
             allMoves.AddRange(FindEnPessant(board, Player));
 
-
-            return allMoves.ToArray();
+            return allMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
         }
         private bool IsStartingPosition(Square position, Player player)
         {

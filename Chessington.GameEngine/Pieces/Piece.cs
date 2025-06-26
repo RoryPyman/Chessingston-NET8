@@ -13,7 +13,7 @@ namespace Chessington.GameEngine.Pieces
 
         public Player Player { get; private set; }
 
-        public abstract IEnumerable<Square> GetAvailableMoves(Board board);
+        public abstract IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck=false);
 
         public void MoveTo(Board board, Square newSquare)
         {
@@ -33,7 +33,7 @@ namespace Chessington.GameEngine.Pieces
                 col += yIndex;
                 if (row == GameSettings.BoardSize || col == GameSettings.BoardSize || row < 0 || col < 0) return available;
                 Square newSquare = new Square(row, col);
-                if (board.GetPiece(newSquare) is null || board.GetPiece(newSquare).Player != board.GetPiece(position).Player)
+                if (board.GetPiece(newSquare) is null || board.GetPiece(newSquare)!.Player != board.GetPiece(position)!.Player)
                 {
                     available.Add(newSquare);
                     if (board.GetPiece(newSquare) != null) return available;

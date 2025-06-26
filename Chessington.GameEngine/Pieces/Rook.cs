@@ -8,7 +8,7 @@ namespace Chessington.GameEngine.Pieces
         public Rook(Player player)
             : base(player) { }
 
-        public override IEnumerable<Square> GetAvailableMoves(Board board)
+        public override IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck=false)
         {
             List<Square> availableMoves = new List<Square>();
             
@@ -19,7 +19,7 @@ namespace Chessington.GameEngine.Pieces
             availableMoves.AddRange(findDirectionalSquares(board, square, 0, 1));
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, 0));
             availableMoves.AddRange(findDirectionalSquares(board, square, 0, -1));
-            return availableMoves.ToArray();
+            return availableMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
 
         }
     }

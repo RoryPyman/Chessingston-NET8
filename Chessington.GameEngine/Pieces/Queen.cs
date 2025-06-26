@@ -8,9 +8,9 @@ namespace Chessington.GameEngine.Pieces
         public Queen(Player player)
             : base(player) { }
 
-        public override IEnumerable<Square> GetAvailableMoves(Board board)
+        public override IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck=false)
         {
-                        List<Square> availableMoves = new List<Square>();
+            List<Square> availableMoves = new List<Square>();
             
             Square square = board.FindPiece(this);
 
@@ -23,7 +23,7 @@ namespace Chessington.GameEngine.Pieces
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, -1));
             availableMoves.AddRange(findDirectionalSquares(board, square, 1, 1));
             availableMoves.AddRange(findDirectionalSquares(board, square, -1, 1));
-            return availableMoves.ToArray();
+            return availableMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
         }
     }
 }

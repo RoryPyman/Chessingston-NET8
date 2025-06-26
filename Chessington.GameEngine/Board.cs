@@ -10,6 +10,8 @@ namespace Chessington.GameEngine
     {
         private readonly Piece?[,] board;
         public Piece lastMovedPiece = null;
+        public Square whiteKingLoc = Square.At(7, 4);
+        public Square blackKingLoc = Square.At(0, 4);
 
         public Player CurrentPlayer { get; private set; }
         public IList<Piece> CapturedPieces { get; private set; }
@@ -60,7 +62,9 @@ namespace Chessington.GameEngine
                 OnPieceCaptured(board[to.Row, to.Col]!);
             }
 
+            if (movingPiece is King) handleKingMove(movingPiece.Player, to);
             if (movingPiece is Pawn) lastMovedPiece = handlePawnMove((Pawn)movingPiece, from, to);
+
             else
             {
                 lastMovedPiece = movingPiece;
@@ -73,7 +77,7 @@ namespace Chessington.GameEngine
             OnCurrentPlayerChanged(CurrentPlayer);
         }
 
-        public Piece handlePawnMove(Pawn movingPiece, Square from, Square to)
+        private Piece handlePawnMove(Pawn movingPiece, Square from, Square to)
         {
             // Check for En Pessant
             if (to.Col != from.Col && GetPiece(to) == null)
@@ -82,7 +86,6 @@ namespace Chessington.GameEngine
                 OnPieceCaptured(lastMovedPiece);
                 board[sq.Row, sq.Col] = null;
             }
-            Console.WriteLine("Row: " + to.Row + "Player: " + movingPiece.Player);
             if ((to.Row == 0 && movingPiece.Player == Player.White) || to.Row == 7 && movingPiece.Player == Player.Black)
             {
                 return new Queen(movingPiece.Player);
@@ -98,6 +101,90 @@ namespace Chessington.GameEngine
             }
             return movingPiece;
         }
+
+        private void handleKingMove(Player player, Square to) {
+            if (player == Player.White) whiteKingLoc = to;
+            else blackKingLoc = to;
+
+        }
+
+        public bool isSquareInCheck(Square square, Player player)
+        {
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    Piece? piece = board[row, col];
+                    if (piece is null || piece.Player == player) continue;
+
+                    if (piece.GetAvailableMoves(this, true).Contains(square)) return true;
+                }
+            }
+            return false;
+        }
+
+        public bool doesMoveCauseCheck(Square to, Piece piece)
+        {
+        Square currentLoc = FindPiece(piece);
+        Piece? temp = board[to.Row, to.Col];
+
+        // Backup king positions
+        var originalWhiteKingLoc = whiteKingLoc;
+        var originalBlackKingLoc = blackKingLoc;
+
+        // If piece is king, simulate king move
+        if (piece is King)
+        {
+            if (piece.Player == Player.White)
+                whiteKingLoc = to;
+            else
+                blackKingLoc = to;
+        }
+
+        // Simulate move
+        board[to.Row, to.Col] = piece;
+        board[currentLoc.Row, currentLoc.Col] = null;
+
+        // If king disappeared for any reason, revert and return false
+            if (findKing(piece.Player) == null)
+            {
+                board[currentLoc.Row, currentLoc.Col] = piece;
+                board[to.Row, to.Col] = temp;
+                whiteKingLoc = originalWhiteKingLoc;
+                blackKingLoc = originalBlackKingLoc;
+                return false;
+            }
+
+        // Evaluate check
+        bool causesCheck = isSquareInCheck(
+            piece.Player == Player.White ? whiteKingLoc : blackKingLoc,
+            piece.Player
+        );
+
+        // Revert simulated move
+        board[currentLoc.Row, currentLoc.Col] = piece;
+        board[to.Row, to.Col] = temp;
+        whiteKingLoc = originalWhiteKingLoc;
+        blackKingLoc = originalBlackKingLoc;
+
+        return causesCheck;
+    }
+
+
+        public Square? findKing(Player player)
+        {
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    Piece? piece = board[row, col];
+                    if (piece is King && piece.Player == player) return Square.At(row, col);
+
+                }
+            }
+            return null;
+        }
+
 
         public delegate void PieceCapturedEventHandler(Piece piece);
 

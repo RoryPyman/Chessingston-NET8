@@ -8,7 +8,7 @@ namespace Chessington.GameEngine.Pieces
         public Knight(Player player)
             : base(player) { }
 
-        public override IEnumerable<Square> GetAvailableMoves(Board board)
+        public override IEnumerable<Square> GetAvailableMoves(Board board, bool ignoreCheck=false)
         {
             Square position = board.FindPiece(this);
             List<Square> possibleMoves = new List<Square>();
@@ -17,7 +17,7 @@ namespace Chessington.GameEngine.Pieces
 
             possibleMoves.RemoveAll(p => p.Col < 0 || p.Col > 7 || p.Row < 0 || p.Row > 7);
             possibleMoves = possibleMoves.Where(p => board.GetPiece(p) == null || board.GetPiece(p)!.Player != this.Player).ToList<Square>();            
-            return possibleMoves;
+            return possibleMoves.Where(s => ignoreCheck || !board.doesMoveCauseCheck(s, this));
         }
 
 
