@@ -229,7 +229,25 @@ namespace Chessington.GameEngine.Tests.Pieces
             blackPawn.MoveTo(board, Square.At(1, 2));
             blackPawn.MoveTo(board, Square.At(1, 3));
             var moves = whitePawn.GetAvailableMoves(board).ToList();
-            moves.Should().BeEquivalentTo([Square.At(1, 2), Square.At(2, 2)]);
+            moves.Should().BeEquivalentTo([Square.At(2, 2)]);
+
+        }
+
+        public void WhitePawns_CantEnPessantAfterOtherMove()
+        {
+            var board = new Board();
+            var blackPawn = new Pawn(Player.Black);
+            var whitePawn = new Pawn(Player.White);
+            var blackRook = new Rook(Player.Black);
+
+            board.AddPiece(Square.At(2, 3), whitePawn);
+            board.AddPiece(Square.At(1, 1), blackPawn);
+            board.AddPiece(Square.At(5, 5), blackRook);
+            blackPawn.MoveTo(board, Square.At(1, 3));
+            blackRook.MoveTo(board, Square.At(4, 5));
+
+            var moves = whitePawn.GetAvailableMoves(board).ToList();
+            moves.Should().BeEquivalentTo([Square.At(2, 2)]);
 
         }
     }
