@@ -9,7 +9,7 @@ namespace Chessington.GameEngine
     public class Board
     {
         private readonly Piece?[,] board;
-        public Piece lastMovedPiece = null;
+        public Piece? lastMovedPiece = null;
         public Square whiteKingLoc = Square.At(7, 4);
         public Square blackKingLoc = Square.At(0, 4);
 
@@ -62,7 +62,7 @@ namespace Chessington.GameEngine
                 OnPieceCaptured(board[to.Row, to.Col]!);
             }
 
-            if (movingPiece is King) handleKingMove(movingPiece.Player, to);
+            if (movingPiece is King) handleKingMove((King)movingPiece, to);
             if (movingPiece is Pawn) lastMovedPiece = handlePawnMove((Pawn)movingPiece, from, to);
 
             else
@@ -102,8 +102,9 @@ namespace Chessington.GameEngine
             return movingPiece;
         }
 
-        private void handleKingMove(Player player, Square to) {
-            if (player == Player.White) whiteKingLoc = to;
+        private void handleKingMove(King king, Square to) {
+            king.setMovedToTrue();
+            if (king.Player == Player.White) whiteKingLoc = to;
             else blackKingLoc = to;
 
         }
