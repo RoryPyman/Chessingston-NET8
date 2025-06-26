@@ -41,7 +41,7 @@ namespace Chessington.GameEngine.Pieces
         }
         private bool IsStartingPosition(Square position, Player player)
         {
-            if (player == Player.White && position.Row == 7)
+            if (player == Player.White && position.Row == 6)
             {
                 return true;
             }
