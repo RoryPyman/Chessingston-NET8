@@ -118,7 +118,7 @@ namespace Chessington.GameEngine
                     Piece? piece = board[row, col];
                     if (piece is null || piece.Player == player) continue;
 
-                    if (piece.GetAvailableMoves(this, true).Contains(square)) return true;
+                    if (piece.GetAvailableMovesNoCheck(this).Contains(square)) return true;
                 }
             }
             return false;
