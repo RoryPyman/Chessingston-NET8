@@ -218,6 +218,22 @@ namespace Chessington.GameEngine.Tests.Pieces
         }
 
         [Test]
+        public void PawnsCaptureOn_EnPessant()
+        {
+            var board = new Board(Player.Black);
+            var blackPawn = new Pawn(Player.Black);
+            var whitePawn = new Pawn(Player.White);
+
+            board.AddPiece(Square.At(3, 2), whitePawn);
+            board.AddPiece(Square.At(1, 1), blackPawn);
+            blackPawn.MoveTo(board, Square.At(3, 1));
+            var moves = whitePawn.GetAvailableMoves(board).ToList();
+            whitePawn.MoveTo(board, Square.At(2, 1));
+            Assert.That(board.GetPiece(Square.At(3, 1)), Is.Null);
+
+        }
+
+        [Test]
         public void WhitePawns_CantEnPessantWhenMovedOnce()
         {
             var board = new Board(Player.Black);
